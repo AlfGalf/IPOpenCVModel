@@ -1,11 +1,10 @@
+'''
+Python code to capture video and take 3 frames detecting the contour of an object (hand), 
+which will be passed on to ML model for prediction
+'''
+
 import cv2 as cv
 import numpy as np
-'''
-img=cv.imread('snake.jpeg')
-
-cv.imshow('Snake',img)
-'''
-
 
 
 bgd = None
