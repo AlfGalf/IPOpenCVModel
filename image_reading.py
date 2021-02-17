@@ -19,7 +19,7 @@ box_left = 700
 start_captured_frame=200
 end_of_captured_frame=start_captured_frame+3
 
-#Method to show frames captured
+#Method to show frames captured (used for debugging)
 def show_frames(frames_captured):
     if len(frames_captured)==0:
         return
@@ -50,30 +50,30 @@ def segment_hand(frame, threshold=25):
     diff = cv.absdiff(bgd.astype("uint8"), frame)
 
     #y is just unused variable neccesary due to threshold method
-    y , thresholded = cv.threshold(diff, threshold, 255, cv.THRESH_BINARY)
+    y , thr_img = cv.threshold(diff, threshold, 255, cv.THRESH_BINARY)
     
     
-    image=thresholded.copy()
+    image=thr_img.copy()
     #Looking for the contours in the frame recorded
-    contours, hierarchy = cv.findContours(thresholded.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv.findContours(thr_img.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
     # To prevent errors if di nit detect contours exit the method
     if len(contours) == 0:
         return
     else:
         # The calculated contour is the hand
-        hand_segment_max_cont = max(contours, key=cv.contourArea)
+        hand_cont = max(contours, key=cv.contourArea)
         
         # Return the image in binary and contours
-        return (thresholded, hand_segment_max_cont)
+        return (thr_img, hand_cont)
 
 
 
 
-cam = cv.VideoCapture(0)
+inp = cv.VideoCapture(0)
 num_frames =0
 while True:
-    ret, frame = cam.read()
+    ret, frame = inp.read()
 
     # inverting the image due to mirror effect
     frame = cv.flip(frame, 1)
@@ -105,25 +105,25 @@ while True:
         if hand is not None:
            
                 
-            thresholded, hand_segment = hand
+            thr_img, hand_contoured = hand
 
             # Drawing contours around hand segment
-            cv.drawContours(frame_copy, [hand_segment + (box_right, box_top)], -1, (255, 0, 0),1)
+            cv.drawContours(frame_copy, [hand_contoured + (box_right, box_top)], -1, (255, 0, 0),1)
             
             if num_frames>=start_captured_frame and num_frames<end_of_captured_frame:
                 #Adding the frames we wish to predict
-                frames_for_prediction.append(thresholded)
+                frames_for_prediction.append(thr_img)
             '''
             Idea for model prediction (Resizing of images and passing it to model which would be loaded at the start as an .h5 file (TF Model))
-            #thresholded = cv.resize(thresholded, (64, 64))
-            #thresholded = cv.cvtColor(thresholded, cv.COLOR_GRAY2RGB)
-            #thresholded = np.reshape(thresholded, (1,thresholded.shape[0],thresholded.shape[1],3))
+            #thr_img = cv.resize(thr_img, (64, 64))
+            #thr_img = cv.cvtColor(thr_img, cv.COLOR_GRAY2RGB)
+            #thr_img = np.reshape(thr_img, (1,thr_img.shape[0],thr_img.shape[1],3))
             #array of frames we wish to train
             
                 
             #64 x64 image, (1,64,64,3) RGB -->0-255
-            #print(thresholded)
-            #pred = model.predict(thresholded)
+            #print(thr_img)
+            #pred = model.predict(thr_img)
 
             '''
     # Draw box on window we are showing the user(frame_copy), parameters: start_point,end_point, colour and thickness
@@ -138,15 +138,8 @@ while True:
 
 
     # Close windows with Esc if we wish to finish 
-    k = cv.waitKey(1) & 0xFF
+    closure = cv.waitKey(1) & 0xFF
 
-    if k == 27 or num_frames==end_of_captured_frame:
+    if closure == 27 or num_frames==end_of_captured_frame:
         break
-show_frames(frames_for_prediction)
-
-
-
-#Example
-
-#new_recording=video_recording(3)
-#show_frames(new_recording)
+show_frames(frames_for_prediction) #for debugging show images we will pass on to the ML Model
