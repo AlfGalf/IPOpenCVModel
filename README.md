@@ -6,7 +6,7 @@ Python code to capture video and take 3 frames detecting the contour of an objec
 **Testing** in order to test the code you can uncomment the last line and run it. It should open an instance of a video recording which  
 will later on show how much time is left until we record the frames, as for testing it will show the 3 frames recorded.  
 
-**Further Work** frame format is currently an array of with numbers varying from 0-255 for the 3 numbers in RGB
+**ML Work** frame format is currently an array of with numbers varying from 0-255 for the 3 numbers in RGB, could resize if neccesary for ML model
 
 
 
