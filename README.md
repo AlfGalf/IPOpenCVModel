@@ -1,7 +1,7 @@
 # IPOpenCVModel
 
 ## Usage
-Clone the repository 
+Clone the repository: https://github.com/AlfGalf/IPOpenCVModel.git  
 Run: python3 image_reading.py
 
 
