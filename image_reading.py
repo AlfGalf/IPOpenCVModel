@@ -157,4 +157,4 @@ def start_camera():
 
 #Uncomment line below to try code
 
-#show_frames(start_camera()) #for debugging show images we will pass on to the ML Model
+show_frames(start_camera()) #for debugging show images we will pass on to the ML Model
