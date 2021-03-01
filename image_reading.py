@@ -42,7 +42,7 @@ def bgd_detection(frame, input_weight):
     if bgd is None:
         bgd = frame.copy().astype("float")
         return None
-
+    
     cv.accumulateWeighted(frame, bgd, input_weight)
 
 #Method to calculate the contours of hand
@@ -120,11 +120,12 @@ def start_camera():
                 thr_img, hand_contoured = hand
 
                 # Drawing contours around hand segment
-                cv.drawContours(frame_copy, [hand_contoured + (box_right, box_top)], -1, (255, 0, 0),1)
+                #cv.drawContours(frame_copy, [hand_contoured + (box_right, box_top)], -1, (255, 0, 0),1)
                 
                 if num_frames>=start_captured_frame and num_frames<end_of_captured_frame:
                     #Adding the frames we wish to predict
                     frames_for_prediction.append(thr_img)
+                    cv.imshow('bgd',bgd)
                 '''
                 Idea for model prediction (Resizing of images and passing it to model which would be loaded at the start as an .h5 file (TF Model))
                 #thr_img = cv.resize(thr_img, (64, 64))
@@ -146,7 +147,7 @@ def start_camera():
         num_frames += 1
         #Window we show to the user
         cv.imshow("Sign Detection", frame_copy)
-        
+        cv.imshow("bgd",bgd)
 
 
         # Close windows with Esc if we wish to finish 
